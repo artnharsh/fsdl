@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Creative Portfolio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+    --bg:#050508;
+    --surface:#0a0a0f;
+    --glass:rgba(255,255,255,0.03);
+    --glass-border:rgba(255,255,255,0.06);
+    --ink:#f0f0f5;
+    --muted:#6b7280;
+    --accent:#6366f1;
+    --accent2:#a855f7;
+    --accent3:#ec4899;
+    --mint:#2dd4bf;
+    --glow:#6366f1;
+}
+html{scroll-behavior:smooth}
+body{
+    font-family:'Space Grotesk',system-ui,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+    overflow-x:hidden;
+    cursor:none;
+}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--accent),var(--accent2));border-radius:3px}
+
+/* Custom Cursor */
+.cursor{position:fixed;width:20px;height:20px;border:2px solid var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transition:transform .15s,border-color .3s,width .3s,height .3s;mix-blend-mode:difference}
+.cursor-dot{position:fixed;width:6px;height:6px;background:var(--ink);border-radius:50%;pointer-events:none;z-index:9999}
+.cursor.hover{width:50px;height:50px;border-color:var(--accent2)}
+.cursor.click{transform:scale(0.8)}
+
+/* Animated Background */
+.bg-canvas{position:fixed;inset:0;z-index:0}
+.noise{position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");opacity:0.03;pointer-events:none;z-index:1}
+.gradient-orb{position:fixed;border-radius:50%;filter:blur(100px);opacity:0.4;animation:orbFloat 20s infinite ease-in-out;pointer-events:none;z-index:0}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,var(--accent),transparent 70%);top:-200px;left:-200px;animation-delay:0s}
+.orb-2{width:500px;height:500px;background:radial-gradient(circle,var(--accent2),transparent 70%);bottom:-150px;right:-150px;animation-delay:-7s}
+.orb-3{width:400px;height:400px;background:radial-gradient(circle,var(--mint),transparent 70%);top:50%;left:50%;animation-delay:-14s}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(50px,-50px) scale(1.1)}50%{transform:translate(-30px,80px) scale(0.9)}75%{transform:translate(60px,30px) scale(1.05)}}
+
+/* Grid Lines */
+.grid-lines{position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:100px 100px;z-index:1;pointer-events:none}
+
+/* Progress Bar */
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3),var(--mint));width:0;z-index:100;box-shadow:0 0 20px var(--accent)}
+
+/* Navigation */
+header{position:fixed;top:0;left:0;right:0;z-index:50;padding:20px 40px;transition:all .4s}
+header.scrolled{background:rgba(5,5,8,0.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border)}
+nav{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,var(--ink),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:flex;align-items:center;gap:12px}
+.logo-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.logo-icon::before{content:'';position:absolute;inset:0;background:linear-gradient(45deg,transparent,rgba(255,255,255,0.3),transparent);animation:shine 3s infinite}
+@keyframes shine{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.nav-links{display:flex;gap:8px}
+.nav-links a{color:var(--muted);text-decoration:none;padding:12px 20px;border-radius:100px;font-size:0.95rem;font-weight:500;transition:all .3s;position:relative;overflow:hidden}
+.nav-links a::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--accent),var(--accent2));opacity:0;transition:opacity .3s;border-radius:100px}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a:hover::before{opacity:0.1}
+.nav-cta{padding:12px 28px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--ink);border-radius:100px;text-decoration:none;font-weight:600;position:relative;overflow:hidden;box-shadow:0 10px 40px rgba(99,102,241,0.3)}
+.nav-cta::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--accent2),var(--accent3));opacity:0;transition:opacity .3s}
+.nav-cta:hover::before{opacity:1}
+.nav-cta span{position:relative;z-index:1}
+
+/* Main Content */
+main{position:relative;z-index:2}
+section{padding:0 40px;max-width:1400px;margin:0 auto}
+
+/* Hero Section */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:100px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px 8px 8px;background:var(--glass);border:1px solid var(--glass-border);border-radius:100px;font-size:0.85rem;color:var(--muted);margin-bottom:32px;backdrop-filter:blur(10px)}
+.hero-badge-dot{width:8px;height:8px;background:var(--mint);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.2)}}
+.hero h1{font-family:'Instrument Serif',serif;font-size:clamp(3rem,10vw,8rem);line-height:1;font-weight:400;margin-bottom:32px}
+.hero h1 .line{display:block;overflow:hidden}
+.hero h1 .word{display:inline-block;transform:translateY(100%);animation:slideUp 1s cubic-bezier(0.19,1,0.22,1) forwards}
+@keyframes slideUp{to{transform:translateY(0)}}
+.hero h1 .word:nth-child(1){animation-delay:0.1s}
+.hero h1 .word:nth-child(2){animation-delay:0.2s}
+.hero h1 .word:nth-child(3){animation-delay:0.3s}
+.hero h1 .gradient{background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-style:italic}
+.hero-desc{font-size:1.25rem;color:var(--muted);max-width:540px;line-height:1.7;margin-bottom:48px;opacity:0;animation:fadeIn 1s .6s forwards}
+@keyframes fadeIn{to{opacity:1}}
+.hero-actions{display:flex;gap:16px;flex-wrap:wrap;opacity:0;animation:fadeIn 1s .8s forwards}
+.magnetic-btn{position:relative;padding:18px 36px;font-size:1rem;font-weight:600;border:none;border-radius:100px;cursor:none;transition:transform .3s,box-shadow .3s}
+.magnetic-btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--ink);box-shadow:0 20px 60px rgba(99,102,241,0.4)}
+.magnetic-btn.secondary{background:transparent;border:1px solid var(--glass-border);color:var(--ink);backdrop-filter:blur(10px)}
+.magnetic-btn:hover{transform:scale(1.05)}
+.magnetic-btn.primary:hover{box-shadow:0 25px 80px rgba(99,102,241,0.5)}
+.btn-text{position:relative;z-index:1;display:flex;align-items:center;gap:8px}
+.btn-arrow{transition:transform .3s}
+.magnetic-btn:hover .btn-arrow{transform:translateX(4px)}
+
+/* Floating Elements */
+.floating-cards{position:absolute;right:0;top:50%;transform:translateY(-50%);width:50%;height:80%;display:none}
+@media(min-width:1024px){.floating-cards{display:block}}
+.float-card{position:absolute;background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:24px;padding:24px;animation:float 6s infinite ease-in-out}
+.float-card:nth-child(1){width:280px;top:10%;right:10%;animation-delay:0s}
+.float-card:nth-child(2){width:240px;top:45%;right:25%;animation-delay:-2s}
+.float-card:nth-child(3){width:200px;bottom:15%;right:5%;animation-delay:-4s}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-20px) rotate(2deg)}}
+.float-card-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));margin-bottom:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem}
+.float-card h4{font-size:1.1rem;margin-bottom:8px}
+.float-card p{font-size:0.9rem;color:var(--muted)}
+
+/* Stats Section */
+.stats{padding:120px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:40px;max-width:1400px;margin:0 auto}
+.stat-item{text-align:center}
+.stat-number{font-family:'Instrument Serif',serif;font-size:4rem;background:linear-gradient(135deg,var(--ink),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.stat-label{color:var(--muted);font-size:0.95rem;margin-top:8px}
+
+/* Marquee */
+.marquee-section{padding:60px 0;border-top:1px solid var(--glass-border);border-bottom:1px solid var(--glass-border);overflow:hidden}
+.marquee-track{display:flex;gap:60px;animation:marquee 30s linear infinite}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.marquee-item{font-size:1.5rem;font-weight:600;color:var(--muted);white-space:nowrap;display:flex;align-items:center;gap:16px;transition:color .3s}
+.marquee-item:hover{color:var(--accent)}
+.marquee-dot{width:8px;height:8px;background:var(--accent);border-radius:50%}
+
+/* Work Section */
+.work-section{padding:160px 40px}
+.section-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:80px;flex-wrap:wrap;gap:24px}
+.section-tag{display:flex;align-items:center;gap:12px;color:var(--accent);font-size:0.9rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px}
+.section-tag::before{content:'';width:40px;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.section-title{font-family:'Instrument Serif',serif;font-size:clamp(2.5rem,6vw,4.5rem);line-height:1.1}
+.section-desc{color:var(--muted);max-width:400px;line-height:1.6}
+
+/* Bento Grid */
+.bento-grid{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:minmax(200px,auto);gap:20px}
+.bento-item{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:32px;overflow:hidden;position:relative;cursor:none;transition:transform .5s,box-shadow .5s}
+.bento-item:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 40px 80px rgba(0,0,0,0.5)}
+.bento-item::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,0.05));opacity:0;transition:opacity .3s}
+.bento-item:hover::before{opacity:1}
+.bento-item.large{grid-column:span 8;grid-row:span 2}
+.bento-item.medium{grid-column:span 4;grid-row:span 2}
+.bento-item.small{grid-column:span 4}
+.bento-content{position:absolute;bottom:0;left:0;right:0;padding:32px;background:linear-gradient(transparent,rgba(0,0,0,0.8));z-index:2}
+.bento-tag{display:inline-block;padding:6px 12px;background:rgba(255,255,255,0.1);border-radius:100px;font-size:0.8rem;margin-bottom:12px}
+.bento-title{font-family:'Instrument Serif',serif;font-size:1.8rem;margin-bottom:8px}
+.bento-desc{color:var(--muted);font-size:0.95rem}
+.bento-visual{position:absolute;inset:0;background:linear-gradient(135deg,var(--surface),var(--bg))}
+.bento-visual-inner{position:absolute;inset:20px;border-radius:24px;background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(168,85,247,0.1));overflow:hidden}
+.bento-visual-inner::after{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.bento-shapes{position:absolute;inset:0}
+.bento-shape{position:absolute;border-radius:50%;filter:blur(60px);opacity:0.5}
+.bento-item:nth-child(1) .bento-shape{width:200px;height:200px;background:var(--accent);top:20%;left:30%}
+.bento-item:nth-child(2) .bento-shape{width:150px;height:150px;background:var(--accent2);bottom:20%;right:20%}
+.bento-item:nth-child(3) .bento-shape{width:120px;height:120px;background:var(--mint);top:30%;left:20%}
+.bento-item:nth-child(4) .bento-shape{width:100px;height:100px;background:var(--accent3);bottom:30%;right:30%}
+
+/* View More Link */
+.bento-link{position:absolute;top:32px;right:32px;width:48px;height:48px;background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:50%;display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(0.8);transition:all .3s;z-index:3}
+.bento-item:hover .bento-link{opacity:1;transform:scale(1)}
+.bento-link svg{width:20px;height:20px;stroke:var(--ink);transition:transform .3s}
+.bento-item:hover .bento-link svg{transform:translate(2px,-2px)}
+
+/* Skills Section */
+.skills-section{padding:160px 40px;background:linear-gradient(180deg,transparent,rgba(99,102,241,0.03),transparent)}
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:60px}
+.skill-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:24px;padding:32px;transition:all .3s}
+.skill-card:hover{border-color:var(--accent);transform:translateY(-4px)}
+.skill-icon{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(168,85,247,0.2));display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:1.5rem}
+.skill-card h3{font-size:1.3rem;margin-bottom:12px}
+.skill-card p{color:var(--muted);line-height:1.6;margin-bottom:20px}
+.skill-bar{height:6px;background:rgba(255,255,255,0.1);border-radius:100px;overflow:hidden}
+.skill-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:100px;width:0;transition:width 1.5s cubic-bezier(0.19,1,0.22,1)}
+.skill-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.skill-tag{padding:6px 12px;background:rgba(255,255,255,0.05);border-radius:100px;font-size:0.8rem;color:var(--muted)}
+
+/* Process Section */
+.process-section{padding:160px 40px}
+.process-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px;margin-top:60px}
+.process-card{position:relative;padding:40px 32px;background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:24px;text-align:center;transition:all .4s}
+.process-card:hover{transform:translateY(-8px);border-color:var(--accent)}
+.process-number{position:absolute;top:-20px;left:50%;transform:translateX(-50%);width:40px;height:40px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem}
+.process-icon{font-size:3rem;margin:24px 0}
+.process-card h3{font-size:1.3rem;margin-bottom:12px}
+.process-card p{color:var(--muted);line-height:1.6}
+
+/* Testimonials */
+.testimonials-section{padding:160px 40px;background:linear-gradient(180deg,transparent,rgba(168,85,247,0.03),transparent)}
+.testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:24px;margin-top:60px}
+.testimonial-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:24px;padding:40px;position:relative;transition:all .4s}
+.testimonial-card:hover{transform:translateY(-4px);border-color:rgba(168,85,247,0.3)}
+.testimonial-quote{font-size:4rem;color:var(--accent);opacity:0.3;position:absolute;top:20px;left:24px;font-family:'Instrument Serif',serif}
+.testimonial-text{font-size:1.1rem;line-height:1.7;margin-bottom:24px;padding-top:24px}
+.testimonial-author{display:flex;align-items:center;gap:16px}
+.testimonial-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));position:relative;overflow:hidden}
+.testimonial-avatar::after{content:'';position:absolute;inset:2px;background:var(--surface);border-radius:50%}
+.testimonial-avatar img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover}
+.testimonial-info h4{font-size:1rem;margin-bottom:4px}
+.testimonial-info span{color:var(--muted);font-size:0.9rem}
+.testimonial-rating{display:flex;gap:4px;margin-top:16px}
+.star{color:var(--accent)}
+
+/* Contact Section */
+.contact-section{padding:160px 40px}
+.contact-wrapper{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+@media(max-width:968px){.contact-wrapper{grid-template-columns:1fr}}
+.contact-info h2{font-family:'Instrument Serif',serif;font-size:3.5rem;margin-bottom:24px;line-height:1.1}
+.contact-info p{color:var(--muted);font-size:1.1rem;line-height:1.7;margin-bottom:40px}
+.contact-links{display:flex;flex-direction:column;gap:16px}
+.contact-link{display:flex;align-items:center;gap:16px;color:var(--muted);text-decoration:none;font-size:1.1rem;transition:color .3s}
+.contact-link:hover{color:var(--accent)}
+.contact-link-icon{width:48px;height:48px;border-radius:12px;background:var(--glass);border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center}
+.contact-form-wrapper{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:32px;padding:48px}
+.form-group{margin-bottom:24px}
+.form-group label{display:block;color:var(--muted);font-size:0.9rem;margin-bottom:8px}
+.form-group input,.form-group textarea{width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);border-radius:12px;padding:16px;color:var(--ink);font-family:inherit;font-size:1rem;transition:all .3s}
+.form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px rgba(99,102,241,0.1)}
+.form-group textarea{min-height:150px;resize:vertical}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}}
+.submit-btn{width:100%;padding:18px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;color:var(--ink);font-size:1rem;font-weight:600;cursor:none;position:relative;overflow:hidden;transition:all .3s}
+.submit-btn:hover{transform:scale(1.02);box-shadow:0 20px 60px rgba(99,102,241,0.4)}
+.submit-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transition:left .5s}
+.submit-btn:hover::before{left:100%}
+
+/* Footer */
+footer{padding:80px 40px;border-top:1px solid var(--glass-border);margin-top:80px}
+.footer-content{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px}
+@media(max-width:968px){.footer-content{grid-template-columns:1fr 1fr;gap:40px}}
+@media(max-width:600px){.footer-content{grid-template-columns:1fr}}
+.footer-brand{font-size:1.5rem;font-weight:700;margin-bottom:16px}
+.footer-desc{color:var(--muted);line-height:1.6;margin-bottom:24px}
+.footer-social{display:flex;gap:12px}
+.footer-social a{width:40px;height:40px;border-radius:50%;background:var(--glass);border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all .3s}
+.footer-social a:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+.footer-column h4{font-size:1rem;margin-bottom:20px;color:var(--ink)}
+.footer-column a{display:block;color:var(--muted);text-decoration:none;padding:8px 0;transition:color .3s}
+.footer-column a:hover{color:var(--accent)}
+.footer-bottom{max-width:1400px;margin:60px auto 0;padding-top:40px;border-top:1px solid var(--glass-border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-copy{color:var(--muted);font-size:0.9rem}
+
+/* Animations */
+[data-animate]{opacity:0;transform:translateY(40px);transition:all 0.8s cubic-bezier(0.19,1,0.22,1)}
+[data-animate].visible{opacity:1;transform:translateY(0)}
+[data-animate="fade"]{transform:none}
+[data-animate="scale"]{transform:scale(0.9)}
+[data-animate="scale"].visible{transform:scale(1)}
+
+/* Responsive */
+@media(max-width:768px){
+    section,.work-section,.skills-section,.process-section,.testimonials-section,.contact-section{padding:80px 20px}
+    header{padding:16px 20px}
+    .hero h1{font-size:2.5rem}
+    .bento-item.large,.bento-item.medium,.bento-item.small{grid-column:span 12}
+    .bento-item.large{grid-row:span 1}
+    .stat-number{font-size:2.5rem}
+    .contact-info h2{font-size:2.5rem}
+    .footer-content{gap:32px}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<div class="bg-canvas">
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+</div>
+<div class="noise"></div>
+<div class="grid-lines"></div>
+<div class="progress" id="progress"></div>
+
+<header id="header">
+    <nav>
+        <div class="logo">
+            <div class="logo-icon">◆</div>
+            STUDIO
+        </div>
+        <div class="nav-links">
+            <a href="#work">Work</a>
+            <a href="#skills">Skills</a>
+            <a href="#process">Process</a>
+            <a href="#testimonials">Reviews</a>
+        </div>
+        <a href="#contact" class="nav-cta"><span>Let's Talk</span></a>
+    </nav>
+</header>
+
+<main>
+    <!-- Hero Section -->
+    <section class="hero" id="top">
+        <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            Available for Q1 2026 Projects
+        </div>
+        <h1>
+            <span class="line"><span class="word">Crafting</span> <span class="word gradient">digital</span></span>
+            <span class="line"><span class="word">experiences</span> <span class="word">that</span></span>
+            <span class="line"><span class="word gradient">inspire</span></span>
+        </h1>
+        <p class="hero-desc">I design and build expressive digital systems that merge technical precision with creative vision. From immersive interfaces to realtime applications.</p>
+        <div class="hero-actions">
+            <button class="magnetic-btn primary">
+                <span class="btn-text">Explore Work <span class="btn-arrow">→</span></span>
+            </button>
+            <button class="magnetic-btn secondary">
+                <span class="btn-text">Download CV</span>
+            </button>
+        </div>
+        <div class="floating-cards">
+            <div class="float-card">
+                <div class="float-card-icon">⚡</div>
+                <h4>Lightning Fast</h4>
+                <p>Optimized for 60fps interactions</p>
+            </div>
+            <div class="float-card">
+                <div class="float-card-icon">🎨</div>
+                <h4>Pixel Perfect</h4>
+                <p>Obsessive attention to detail</p>
+            </div>
+            <div class="float-card">
+                <div class="float-card-icon">🚀</div>
+                <h4>Ship Fast</h4>
+                <p>Rapid iteration & delivery</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <div class="stats" data-animate>
+        <div class="stat-item">
+            <div class="stat-number" data-count="50">0</div>
+            <div class="stat-label">Projects Delivered</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" data-count="8">0</div>
+            <div class="stat-label">Years Experience</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" data-count="30">0</div>
+            <div class="stat-label">Happy Clients</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" data-count="15">0</div>
+            <div class="stat-label">Awards Won</div>
+        </div>
+    </div>
+
+    <!-- Marquee -->
+    <div class="marquee-section">
+        <div class="marquee-track">
+            <span class="marquee-item"><span class="marquee-dot"></span>Creative Development</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>WebGL & 3D</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Motion Design</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Realtime Systems</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Product Design</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Creative Development</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>WebGL & 3D</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Motion Design</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Realtime Systems</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Product Design</span>
+        </div>
+    </div>
+
+    <!-- Work Section -->
+    <section class="work-section" id="work">
+        <div class="section-header" data-animate>
+            <div>
+                <div class="section-tag">Selected Work</div>
+                <h2 class="section-title">Featured<br>Projects</h2>
+            </div>
+            <p class="section-desc">A curated selection of recent work spanning interactive experiences, realtime systems, and creative technology.</p>
+        </div>
+        
+        <div class="bento-grid">
+            <div class="bento-item large" data-animate>
+                <div class="bento-visual">
+                    <div class="bento-shapes"><div class="bento-shape"></div></div>
+                    <div class="bento-visual-inner"></div>
+                </div>
+                <a href="#" class="bento-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                    </svg>
+                </a>
+                <div class="bento-content">
+                    <span class="bento-tag">Web Platform</span>
+                    <h3 class="bento-title">Signal Atlas</h3>
+                    <p class="bento-desc">Live network observability with sub-second updates and anomaly detection</p>
+                </div>
+            </div>
+            <div class="bento-item medium" data-animate>
+                <div class="bento-visual">
+                    <div class="bento-shapes"><div class="bento-shape"></div></div>
+                    <div class="bento-visual-inner"></div>
+                </div>
+                <a href="#" class="bento-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                    </svg>
+                </a>
+                <div class="bento-content">
+                    <span class="bento-tag">Creative Tool</span>
+                    <h3 class="bento-title">Glyph Studio</h3>
+                    <p class="bento-desc">Generative typography with shader-powered effects</p>
+                </div>
+            </div>
+            <div class="bento-item small" data-animate>
+                <div class="bento-visual">
+                    <div class="bento-shapes"><div class="bento-shape"></div></div>
+                    <div class="bento-visual-inner"></div>
+                </div>
+                <a href="#" class="bento-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                    </svg>
+                </a>
+                <div class="bento-content">
+                    <span class="bento-tag">SaaS</span>
+                    <h3 class="bento-title">Orbit CRM</h3>
+                    <p class="bento-desc">Multiplayer collaboration</p>
+                </div>
+            </div>
+            <div class="bento-item small" data-animate>
+                <div class="bento-visual">
+                    <div class="bento-shapes"><div class="bento-shape"></div></div>
+                    <div class="bento-visual-inner"></div>
+                </div>
+                <a href="#" class="bento-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                    </svg>
+                </a>
+                <div class="bento-content">
+                    <span class="bento-tag">Productivity</span>
+                    <h3 class="bento-title">Pulseboard</h3>
+                    <p class="bento-desc">Focus-driven task management</p>
+                </div>
+            </div>
+            <div class="bento-item small" data-animate>
+                <div class="bento-visual">
+                    <div class="bento-shapes"><div class="bento-shape"></div></div>
+                    <div class="bento-visual-inner"></div>
+                </div>
+                <a href="#" class="bento-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                    </svg>
+                </a>
+                <div class="bento-content">
+                    <span class="bento-tag">E-commerce</span>
+                    <h3 class="bento-title">Lumina Shop</h3>
+                    <p class="bento-desc">Immersive shopping experience</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="skills-section" id="skills">
+        <div class="section-header" data-animate>
+            <div>
+                <div class="section-tag">Capabilities</div>
+                <h2 class="section-title">Skills &<br>Expertise</h2>
+            </div>
+        </div>
+        <div class="skills-grid">
+            <div class="skill-card" data-animate>
+                <div class="skill-icon">🎯</div>
+                <h3>Frontend Architecture</h3>
+                <p>Building scalable, performant applications with modern frameworks and best practices.</p>
+                <div class="skill-bar"><div class="skill-fill" data-width="95%"></div></div>
+                <div class="skill-tags">
+                    <span class="skill-tag">React</span>
+                    <span class="skill-tag">TypeScript</span>
+                    <span class="skill-tag">Next.js</span>
+                </div>
+            </div>
+            <div class="skill-card" data-animate>
+                <div class="skill-icon">✨</div>
+                <h3>Motion & Animation</h3>
+                <p>Creating fluid, delightful interactions that enhance user experience and engagement.</p>
+                <div class="skill-bar"><div class="skill-fill" data-width="90%"></div></div>
+                <div class="skill-tags">
+                    <span class="skill-tag">GSAP</span>
+                    <span class="skill-tag">Framer Motion</span>
+                    <span class="skill-tag">CSS</span>
+                </div>
+            </div>
+            <div class="skill-card" data-animate>
+                <div class="skill-icon">🌐</div>
+                <h3>WebGL & 3D</h3>
+                <p>Developing immersive visual experiences with cutting-edge graphics technology.</p>
+                <div class="skill-bar"><div class="skill-fill" data-width="85%"></div></div>
+                <div class="skill-tags">
+                    <span class="skill-tag">Three.js</span>
+                    <span class="skill-tag">WebGL</span>
+                    <span class="skill-tag">GLSL</span>
+                </div>
+            </div>
+            <div class="skill-card" data-animate>
+                <div class="skill-icon">⚡</div>
+                <h3>Realtime Systems</h3>
+                <p>Building live, collaborative applications with real-time data synchronization.</p>
+                <div class="skill-bar"><div class="skill-fill" data-width="88%"></div></div>
+                <div class="skill-tags">
+                    <span class="skill-tag">WebSockets</span>
+                    <span class="skill-tag">GraphQL</span>
+                    <span class="skill-tag">Node.js</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="process-section" id="process">
+        <div class="section-header" data-animate>
+            <div>
+                <div class="section-tag">How I Work</div>
+                <h2 class="section-title">My<br>Process</h2>
+            </div>
+        </div>
+        <div class="process-grid">
+            <div class="process-card" data-animate>
+                <div class="process-number">01</div>
+                <div class="process-icon">🔍</div>
+                <h3>Discovery</h3>
+                <p>Deep dive into your vision, goals, and constraints to align on the perfect approach.</p>
+            </div>
+            <div class="process-card" data-animate>
+                <div class="process-number">02</div>
+                <div class="process-icon">✏️</div>
+                <h3>Design</h3>
+                <p>Crafting thoughtful interfaces and interactions that balance aesthetics with usability.</p>
+            </div>
+            <div class="process-card" data-animate>
+                <div class="process-number">03</div>
+                <div class="process-icon">⚙️</div>
+                <h3>Develop</h3>
+                <p>Building with clean, maintainable code and obsessive attention to performance.</p>
+            </div>
+            <div class="process-card" data-animate>
+                <div class="process-number">04</div>
+                <div class="process-icon">🚀</div>
+                <h3>Deploy</h3>
+                <p>Launch with confidence through thorough testing and optimized delivery.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section" id="testimonials">
+        <div class="section-header" data-animate>
+            <div>
+                <div class="section-tag">Client Reviews</div>
+                <h2 class="section-title">What They<br>Say</h2>
+            </div>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card" data-animate>
+                <div class="testimonial-quote">"</div>
+                <p class="testimonial-text">Exceptional attention to detail and technical depth. The realtime features shipped flawlessly and our users absolutely love the fluid interactions.</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar"></div>
+                    <div class="testimonial-info">
+                        <h4>Sarah Chen</h4>
+                        <span>Product Lead, TechCorp</span>
+                    </div>
+                </div>
+                <div class="testimonial-rating">
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                </div>
+            </div>
+            <div class="testimonial-card" data-animate>
+                <div class="testimonial-quote">"</div>
+                <p class="testimonial-text">A rare blend of creative vision and engineering rigor. Delivered a prototype that became our north star for the entire product line.</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar"></div>
+                    <div class="testimonial-info">
+                        <h4>Marcus Johnson</h4>
+                        <span>CTO, Startup Labs</span>
+                    </div>
+                </div>
+                <div class="testimonial-rating">
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                </div>
+            </div>
+            <div class="testimonial-card" data-animate>
+                <div class="testimonial-quote">"</div>
+                <p class="testimonial-text">Transformed our clunky dashboard into a joy to use. Performance gains and motion design were beyond what we imagined possible.</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar"></div>
+                    <div class="testimonial-info">
+                        <h4>Elena Rodriguez</h4>
+                        <span>Head of Design, DataFlow</span>
+                    </div>
+                </div>
+                <div class="testimonial-rating">
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <div class="contact-wrapper">
+            <div class="contact-info" data-animate>
+                <div class="section-tag">Get in Touch</div>
+                <h2>Let's create something amazing together</h2>
+                <p>Have a project in mind? I'm currently available for select freelance opportunities. Let's discuss how we can bring your vision to life.</p>
+                <div class="contact-links">
+                    <a href="mailto:hello@studio.com" class="contact-link">
+                        <span class="contact-link-icon">✉️</span>
+                        hello@studio.com
+                    </a>
+                    <a href="#" class="contact-link">
+                        <span class="contact-link-icon">📍</span>
+                        San Francisco, CA
+                    </a>
+                    <a href="#" class="contact-link">
+                        <span class="contact-link-icon">📱</span>
+                        Schedule a call
+                    </a>
+                </div>
+            </div>
+            <div class="contact-form-wrapper" data-animate>
+                <form id="contactForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" placeholder="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" placeholder="john@company.com" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Project Type</label>
+                        <input type="text" placeholder="Web Development, Design, etc.">
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea placeholder="Tell me about your project..."></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Message →</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div>
+            <div class="footer-brand">STUDIO</div>
+            <p class="footer-desc">Crafting digital experiences that inspire and delight. Based in San Francisco, working globally.</p>
+            <div class="footer-social">
+                <a href="#">GH</a>
+                <a href="#">TW</a>
+                <a href="#">LI</a>
+                <a href="#">DR</a>
+            </div>
+        </div>
+        <div class="footer-column">
+            <h4>Navigation</h4>
+            <a href="#work">Work</a>
+            <a href="#skills">Skills</a>
+            <a href="#process">Process</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <div class="footer-column">
+            <h4>Services</h4>
+            <a href="#">Web Development</a>
+            <a href="#">UI/UX Design</a>
+            <a href="#">Creative Coding</a>
+            <a href="#">Consulting</a>
+        </div>
+        <div class="footer-column">
+            <h4>Resources</h4>
+            <a href="#">Blog</a>
+            <a href="#">Uses</a>
+            <a href="#">Bookmarks</a>
+            <a href="#">Resume</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p class="footer-copy">© 2026 Studio. All rights reserved.</p>
+        <p class="footer-copy">Crafted with ♥ and lots of coffee</p>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+// Custom Cursor
+const cursor = document.getElementById('cursor');
+const cursorDot = document.getElementById('cursorDot');
+let cursorX = 0, cursorY = 0;
+let dotX = 0, dotY = 0;
+
+document.addEventListener('mousemove', (e) => {
+    cursorX = e.clientX;
+    cursorY = e.clientY;
+});
+
+function animateCursor() {
+    dotX += (cursorX - dotX) * 0.15;
+    dotY += (cursorY - dotY) * 0.15;
+    
+    cursor.style.left = cursorX - 10 + 'px';
+    cursor.style.top = cursorY - 10 + 'px';
+    cursorDot.style.left = dotX - 3 + 'px';
+    cursorDot.style.top = dotY - 3 + 'px';
+    
+    requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+// Cursor hover effects
+document.querySelectorAll('a, button, .bento-item, .skill-card, .testimonial-card, .process-card').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+});
+
+document.addEventListener('mousedown', () => cursor.classList.add('click'));
+document.addEventListener('mouseup', () => cursor.classList.remove('click'));
+
+// Progress bar
+window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = (window.scrollY / h) * 100;
+    document.getElementById('progress').style.width = pct + '%';
+});
+
+// Header scroll effect
+const header = document.getElementById('header');
+window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// Animate elements on scroll
+document.querySelectorAll('[data-animate]').forEach(el => {
+    ScrollTrigger.create({
+        trigger: el,
+        start: 'top 85%',
+        onEnter: () => el.classList.add('visible'),
+        once: true
+    });
+});
+
+// Skill bar animations
+document.querySelectorAll('.skill-fill').forEach(fill => {
+    gsap.to(fill, {
+        width: fill.dataset.width,
+        duration: 1.5,
+        ease: 'power2.out',
+        scrollTrigger: {
+            trigger: fill,
+            start: 'top 90%'
+        }
+    });
+});
+
+// Counter animations
+document.querySelectorAll('[data-count]').forEach(counter => {
+    const end = parseInt(counter.dataset.count);
+    gsap.to({ val: 0 }, {
+        val: end,
+        duration: 2,
+        ease: 'power1.out',
+        scrollTrigger: {
+            trigger: counter,
+            start: 'top 90%'
+        },
+        onUpdate: function() {
+            counter.textContent = Math.floor(this.targets()[0].val) + '+';
+        }
+    });
+});
+
+// Magnetic buttons
+document.querySelectorAll('.magnetic-btn, .nav-cta').forEach(btn => {
+    btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+    });
+    btn.addEventListener('mouseleave', () => {
+        btn.style.transform = '';
+    });
+});
+
+// Bento card 3D tilt
+document.querySelectorAll('.bento-item').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `perspective(1000px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg) translateY(-8px) scale(1.02)`;
+    });
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+    });
+});
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+});
+
+// Form submission
+const form = document.getElementById('contactForm');
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const btn = form.querySelector('.submit-btn');
+    btn.textContent = 'Sending...';
+    setTimeout(() => {
+        btn.textContent = '✓ Message Sent!';
+        btn.style.background = 'linear-gradient(135deg, #2dd4bf, #6366f1)';
+        setTimeout(() => {
+            form.reset();
+            btn.textContent = 'Send Message →';
+            btn.style.background = '';
+        }, 2500);
+    }, 1500);
+});
+
+// Parallax orbs
+document.addEventListener('mousemove', (e) => {
+    const orbs = document.querySelectorAll('.gradient-orb');
+    const x = e.clientX / window.innerWidth;
+    const y = e.clientY / window.innerHeight;
+    
+    orbs.forEach((orb, i) => {
+        const speed = (i + 1) * 20;
+        orb.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+    });
+});
+
+// Stagger animations for cards
+gsap.utils.toArray('.bento-item, .skill-card, .process-card, .testimonial-card').forEach((el, i) => {
+    gsap.from(el, {
+        y: 60,
+        opacity: 0,
+        duration: 0.8,
+        delay: i * 0.1,
+        ease: 'power2.out',
+        scrollTrigger: {
+            trigger: el,
+            start: 'top 90%'
+        }
+    });
+});
+
+// Text scramble effect on hover
+function scrambleText(element) {
+    const chars = '!<>-_\\/[]{}—=+*^?#________';
+    const originalText = element.textContent;
+    let iteration = 0;
+    
+    const interval = setInterval(() => {
+        element.textContent = originalText
+            .split('')
+            .map((char, index) => {
+                if (index < iteration) return originalText[index];
+                return chars[Math.floor(Math.random() * chars.length)];
+            })
+            .join('');
+        
+        if (iteration >= originalText.length) clearInterval(interval);
+        iteration += 1/3;
+    }, 30);
+}
+
+document.querySelectorAll('.bento-title').forEach(title => {
+    title.addEventListener('mouseenter', () => scrambleText(title));
+});
+</script>
+</body>
+</html>
