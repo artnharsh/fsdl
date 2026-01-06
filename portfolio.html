@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clash Portfolio - Town Hall</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Supercell+Magic:wght@400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .grass-bg {
+            background: linear-gradient(180deg, #4a7c59 0%, #2d5016 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .grass-bg::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(62, 130, 68, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(45, 80, 22, 0.3) 0%, transparent 50%);
+            animation: grassMove 20s infinite linear;
+        }
+        
+        @keyframes grassMove {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(20px, 10px); }
+        }
+        
+        .game-container {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Header/Town Hall */
+        .town-hall {
+            background: linear-gradient(135deg, #8B4513 0%, #654321 100%);
+            border: 4px solid #D4AF37;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 2px 10px rgba(255, 255, 255, 0.3);
+            margin: 20px auto;
+            padding: 40px;
+            max-width: 900px;
+            position: relative;
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+        
+        .town-hall::before {
+            content: '⚔️';
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 50px;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.5));
+        }
+        
+        .profile-shield {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border-radius: 50%;
+            border: 5px solid #8B4513;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            position: relative;
+            opacity: 0;
+            transform: scale(0);
+        }
+        
+        .profile-shield::after {
+            content: '';
+            position: absolute;
+            width: 170px;
+            height: 170px;
+            border: 3px dashed #FFD700;
+            border-radius: 50%;
+            animation: rotate 10s linear infinite;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .player-name {
+            font-size: 42px;
+            font-weight: bold;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+            color: #FFD700;
+            margin: 20px 0 10px;
+        }
+        
+        .player-title {
+            font-size: 20px;
+            color: #FFA500;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .trophy-count {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, #C0C0C0 0%, #808080 100%);
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* Building Cards */
+        .building-card {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
+            border: 3px solid #34495e;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateX(-100px);
+        }
+        
+        .building-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+        }
+        
+        .building-card:hover::before {
+            animation: shine 1.5s;
+        }
+        
+        @keyframes shine {
+            0% { top: -50%; right: -50%; }
+            100% { top: 150%; right: 150%; }
+        }
+        
+        .building-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+            display: inline-block;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+        }
+        
+        .building-title {
+            font-size: 28px;
+            color: #FFD700;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .level-badge {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 10px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Skill Bars */
+        .skill-item {
+            margin: 15px 0;
+            opacity: 0;
+            transform: translateX(50px);
+        }
+        
+        .skill-name {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .progress-bar-container {
+            background: #1a252f;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid #34495e;
+            position: relative;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%);
+            border-radius: 15px;
+            transition: width 2s ease-out;
+            width: 0;
+            box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: progressShine 2s infinite;
+        }
+        
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Project Cards */
+        .project-card {
+            background: linear-gradient(135deg, #8B4513 0%, #654321 100%);
+            border: 3px solid #D4AF37;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        
+        .project-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.4);
+        }
+        
+        .project-stars {
+            color: #FFD700;
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        
+        /* Contact Section */
+        .contact-button {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: #fff;
+            border: 3px solid #1e8449;
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 10px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .contact-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(39, 174, 96, 0.5);
+            background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+        }
+        
+        /* Social Links */
+        .social-links {
+            margin-top: 30px;
+        }
+        
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border-radius: 50%;
+            margin: 0 10px;
+            font-size: 28px;
+            color: #fff;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-10px) rotate(360deg);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.5);
+        }
+        
+        /* Clouds */
+        .cloud {
+            position: fixed;
+            width: 200px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 100px;
+            top: 10%;
+            animation: float 30s infinite linear;
+            z-index: 0;
+        }
+        
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+        }
+        
+        .cloud::before {
+            width: 80px;
+            height: 80px;
+            top: -40px;
+            left: 30px;
+        }
+        
+        .cloud::after {
+            width: 100px;
+            height: 100px;
+            top: -50px;
+            right: 30px;
+        }
+        
+        .cloud:nth-child(2) {
+            top: 30%;
+            animation-duration: 40s;
+            animation-delay: -10s;
+        }
+        
+        @keyframes float {
+            0% { left: -200px; }
+            100% { left: 100%; }
+        }
+        
+        .section-title {
+            font-size: 36px;
+            color: #FFD700;
+            text-align: center;
+            margin: 40px 0 30px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+            position: relative;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        
+        .section-title::after {
+            content: '⚔️';
+            display: block;
+            font-size: 30px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body class="grass-bg">
+    <!-- Decorative clouds -->
+    <div class="cloud"></div>
+    <div class="cloud"></div>
+    
+    <div class="game-container">
+        <!-- Town Hall / Header -->
+        <div class="container">
+            <div class="town-hall">
+                <div class="profile-shield">👤</div>
+                <h1 class="player-name text-center">Your Name</h1>
+                <p class="player-title text-center">Full Stack Developer | Level 10</p>
+                <div class="text-center">
+                    <div class="trophy-count">
+                        🏆 <span style="margin-left: 10px;">3500</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- About Section / Clan Castle -->
+            <div class="building-card">
+                <div class="text-center">
+                    <span class="building-icon">🏰</span>
+                    <h2 class="building-title">About Me <span class="level-badge">MAX</span></h2>
+                </div>
+                <p style="font-size: 18px; line-height: 1.8; color: #ecf0f1;">
+                    Passionate developer crafting digital experiences like building the ultimate base. 
+                    With strategic thinking and powerful code, I defend against bugs and launch successful projects. 
+                    Always upgrading skills and ready for the next challenge!
+                </p>
+            </div>
+            
+            <!-- Skills Section / Army Training -->
+            <h2 class="section-title">Battle Skills</h2>
+            <div class="building-card">
+                <div class="text-center">
+                    <span class="building-icon">⚔️</span>
+                    <h2 class="building-title">Troop Training <span class="level-badge">LV 13</span></h2>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>💻 JavaScript</span>
+                        <span>95%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" data-width="95"></div>
+                    </div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>⚛️ React</span>
+                        <span>90%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" data-width="90"></div>
+                    </div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>🐍 Python</span>
+                        <span>85%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" data-width="85"></div>
+                    </div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>🎨 UI/UX Design</span>
+                        <span>88%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" data-width="88"></div>
+                    </div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-name">
+                        <span>📦 Node.js</span>
+                        <span>92%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" data-width="92"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Projects Section / War Victories -->
+            <h2 class="section-title">Victory Log</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="project-card">
+                        <h3 class="building-title" style="font-size: 24px;">🎮 Game Dashboard</h3>
+                        <p style="color: #ecf0f1;">Real-time gaming stats platform with live leaderboards and player analytics.</p>
+                        <div class="project-stars">⭐⭐⭐</div>
+                        <span class="level-badge">Legendary</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="project-card">
+                        <h3 class="building-title" style="font-size: 24px;">🛒 E-Commerce App</h3>
+                        <p style="color: #ecf0f1;">Full-stack shopping platform with payment integration and inventory management.</p>
+                        <div class="project-stars">⭐⭐⭐</div>
+                        <span class="level-badge">Epic</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="project-card">
+                        <h3 class="building-title" style="font-size: 24px;">📱 Social Network</h3>
+                        <p style="color: #ecf0f1;">Community platform with real-time chat, posts, and user interactions.</p>
+                        <div class="project-stars">⭐⭐⭐</div>
+                        <span class="level-badge">Champion</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="project-card">
+                        <h3 class="building-title" style="font-size: 24px;">🤖 AI Chatbot</h3>
+                        <p style="color: #ecf0f1;">Intelligent assistant powered by machine learning for customer support.</p>
+                        <div class="project-stars">⭐⭐⭐</div>
+                        <span class="level-badge">Titan</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Section -->
+            <div class="building-card text-center" style="margin-top: 50px;">
+                <span class="building-icon">📮</span>
+                <h2 class="building-title">Join My Clan</h2>
+                <p style="font-size: 18px; color: #ecf0f1; margin: 20px 0;">
+                    Ready to build something legendary together? Send me a friendly challenge!
+                </p>
+                <button class="contact-button">Attack! (Contact Me)</button>
+                
+                <div class="social-links">
+                    <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+            
+            <div style="text-align: center; padding: 40px 0; color: #ecf0f1; opacity: 0.7;">
+                <p>© 2025 Your Portfolio | Clash On! ⚔️</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Town Hall entrance animation
+        gsap.to('.town-hall', {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: 'bounce.out'
+        });
+        
+        // Profile shield pop-in
+        gsap.to('.profile-shield', {
+            opacity: 1,
+            scale: 1,
+            duration: 0.8,
+            delay: 0.3,
+            ease: 'back.out(2)'
+        });
+        
+        // Building cards animation on scroll
+        gsap.utils.toArray('.building-card').forEach((card, i) => {
+            gsap.to(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                    end: 'top 50%',
+                    toggleActions: 'play none none reverse'
+                },
+                opacity: 1,
+                x: 0,
+                duration: 0.8,
+                delay: i * 0.1,
+                ease: 'power2.out'
+            });
+        });
+        
+        // Skills animation
+        gsap.utils.toArray('.skill-item').forEach((skill, i) => {
+            gsap.to(skill, {
+                scrollTrigger: {
+                    trigger: skill,
+                    start: 'top 85%',
+                    onEnter: () => {
+                        const bar = skill.querySelector('.progress-bar-fill');
+                        const width = bar.getAttribute('data-width');
+                        bar.style.width = width + '%';
+                    }
+                },
+                opacity: 1,
+                x: 0,
+                duration: 0.6,
+                delay: i * 0.1,
+                ease: 'power2.out'
+            });
+        });
+        
+        // Project cards stagger animation
+        gsap.utils.toArray('.project-card').forEach((card, i) => {
+            gsap.to(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                    toggleActions: 'play none none reverse'
+                },
+                opacity: 1,
+                scale: 1,
+                duration: 0.6,
+                delay: i * 0.15,
+                ease: 'back.out(1.5)'
+            });
+        });
+        
+        // Section titles animation
+        gsap.utils.toArray('.section-title').forEach(title => {
+            gsap.to(title, {
+                scrollTrigger: {
+                    trigger: title,
+                    start: 'top 80%',
+                    toggleActions: 'play none none reverse'
+                },
+                opacity: 1,
+                scale: 1,
+                duration: 0.8,
+                ease: 'elastic.out(1, 0.5)'
+            });
+        });
+        
+        // Contact button animation
+        gsap.to('.contact-button', {
+            scrollTrigger: {
+                trigger: '.contact-button',
+                start: 'top 90%',
+                toggleActions: 'play none none reverse'
+            },
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'back.out(2)'
+        });
+        
+        // Social icons stagger
+        gsap.utils.toArray('.social-icon').forEach((icon, i) => {
+            gsap.to(icon, {
+                scrollTrigger: {
+                    trigger: icon,
+                    start: 'top 90%',
+                    toggleActions: 'play none none reverse'
+                },
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                delay: i * 0.1,
+                ease: 'back.out(2)'
+            });
+        });
+        
+        // Parallax effect for clouds
+        gsap.to('.cloud', {
+            scrollTrigger: {
+                trigger: 'body',
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: 1
+            },
+            y: 200,
+            ease: 'none'
+        });
+    </script>
+</body>
+</html>

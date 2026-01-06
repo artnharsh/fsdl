@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Agent Profile — Neon Card</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root{ --bg:#070607; --card:#0f0f10; --accent:#ff3b4a; --accent-2:#ff7a3d; --muted:rgba(255,255,255,0.85)}
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{
+      font-family:Rajdhani,Segoe UI,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,#050505 0%, #0b0b0b 40%);color:var(--muted);display:flex;align-items:center;justify-content:center;padding:28px;overflow:hidden
+    }
+
+    .glow{position:fixed;inset:0;z-index:0;pointer-events:none}
+    /* subtle Valorant-style background streak */
+    body::before{content:'';position:fixed;left:-30%;top:-10%;width:160%;height:60%;background:linear-gradient(120deg, rgba(255,59,74,0.06), rgba(255,122,61,0.02));transform:rotate(-12deg);filter:blur(28px);z-index:0;pointer-events:none}
+
+    .wrap{position:relative;z-index:2;width:min(980px,96%);display:grid;grid-template-columns:420px 1fr;gap:24px;align-items:start}
+
+    /* profile card */
+    .card-left{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 8px 30px rgba(0,0,0,0.7)}
+    .agent-hero{display:flex;gap:14px;align-items:center}
+    .avatar{width:110px;height:110px;border-radius:14px;background:linear-gradient(135deg,#1a1a1a, #111);display:grid;place-items:center;font-size:36px;font-weight:700;color:white;position:relative;overflow:hidden}
+    .avatar svg{width:80%;height:80%;mix-blend-mode:screen}
+    .agent-meta{flex:1}
+    .agent-name{font-family:Orbitron, Rajdhani, sans-serif;font-size:22px;color:#fff;margin:0}
+    .agent-role{font-size:12px;color:rgba(255,255,255,0.55);margin-top:6px}
+    .rank-badge{margin-top:10px;display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#111;font-weight:700;font-size:13px}
+
+    .agent-stats{display:flex;gap:8px;margin-top:14px}
+    .stat{flex:1;background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;text-align:center}
+    .stat .num{font-size:18px;color:#fff;font-weight:700}
+    .stat .label{font-size:11px;color:rgba(255,255,255,0.6);margin-top:6px}
+
+    .abilities{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+    .ability{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);cursor:pointer;position:relative;overflow:hidden}
+    .ability h4{margin:0;font-size:13px;color:#fff}
+    .ability p{margin:6px 0 0;font-size:12px;color:rgba(255,255,255,0.65)}
+    .ability:before{content:'';position:absolute;inset:auto -60% -60% auto;background:radial-gradient(circle at center, rgba(255,70,85,0.08), transparent);transform:rotate(20deg)}
+
+    /* right column */
+    .card-right{display:flex;flex-direction:column;gap:12px}
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .clock-small{text-align:right;font-family:Orbitron,monospace;font-size:16px}
+
+    .socials{display:flex;gap:8px;margin-top:8px}
+    .social{padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.02);cursor:pointer;border:1px solid rgba(255,255,255,0.03)}
+
+    .follow{margin-top:12px;display:flex;gap:10px}
+    .btn-neon{padding:10px 14px;border-radius:10px;border:none;color:#080808;background:linear-gradient(90deg,var(--accent),var(--accent-2));font-weight:700;cursor:pointer;box-shadow:0 6px 24px rgba(255,70,85,0.14)}
+    .btn-ghost{padding:10px 14px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);cursor:pointer}
+
+    @media (max-width:880px){.wrap{grid-template-columns:1fr}.card-left{order:2}.card-right{order:1}}
+    /* neon + interactivity visuals */
+    .avatar{transition:transform .6s ease, box-shadow .2s ease}
+    .avatar:hover{transform:translateY(-6px) rotate(-2deg);box-shadow:0 18px 48px rgba(255,70,85,0.12)}
+    .avatar::after{content:'';position:absolute;inset:0;border-radius:12px;mix-blend-mode:screen;box-shadow:0 0 24px rgba(255,70,85,0.08)}
+    .btn-neon{transition:transform .14s ease, box-shadow .14s ease}
+    .btn-neon:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(255,70,85,0.18)}
+    .ability{transition:transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s}
+    .ability.active{transform:translateY(-8px) scale(1.02);box-shadow:0 20px 40px rgba(255,70,85,0.06)}
+    .ability-tip{position:absolute;z-index:6}
+    #abilityDetail{min-height:82px}
+    .ability-detail-title{font-weight:700;color:#fff;margin-bottom:6px}
+    .ability-detail-desc{color:rgba(255,255,255,0.75);font-size:13px}
+    /* subtle animated gradient on left card border */
+    .card-left{border-image:linear-gradient(90deg,rgba(255,70,85,0.9),rgba(255,130,87,0.9)) 1}
+    /* smoke overlays */
+    .smoke{position:fixed;left:0;right:0;top:0;height:100%;pointer-events:none;z-index:1;mix-blend-mode:screen}
+    .smoke-a{background:radial-gradient(closest-side, rgba(255,90,100,0.12), transparent 40%);transform:translateY(-10%);filter:blur(36px);animation:smokeMoveA 18s linear infinite}
+    .smoke-b{background:radial-gradient(closest-side, rgba(255,140,80,0.08), transparent 30%);transform:translateY(10%);filter:blur(56px);animation:smokeMoveB 26s linear infinite}
+
+    @keyframes smokeMoveA{0%{transform:translateX(-20%) translateY(-8%) scale(1)}50%{transform:translateX(10%) translateY(-12%) scale(1.05)}100%{transform:translateX(-20%) translateY(-8%) scale(1)}}
+    @keyframes smokeMoveB{0%{transform:translateX(20%) translateY(8%) scale(1)}50%{transform:translateX(-8%) translateY(12%) scale(1.03)}100%{transform:translateX(20%) translateY(8%) scale(1)}}
+
+    /* agent selector */
+    .agent-list{display:flex;gap:8px;margin-top:12px}
+    .agent-btn{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:6px 8px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+    .agent-btn .initial{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;font-weight:700;color:#090909;background:linear-gradient(90deg,var(--accent),var(--accent-2));box-shadow:0 6px 18px rgba(255,70,85,0.08)}
+    .agent-btn.active{outline:2px solid rgba(255,70,85,0.12)}
+  </style>
+  </head>
+  <body>
+    <div class="glow" aria-hidden>
+      <svg width="0" height="0">
+        <filter id="soft">
+          <feGaussianBlur stdDeviation="20" result="b" />
+          <feBlend in="SourceGraphic" in2="b" mode="screen"/>
+        </filter>
+      </svg>
+    </div>
+
+    <!-- animated smoke overlays -->
+    <div class="smoke smoke-a" aria-hidden></div>
+    <div class="smoke smoke-b" aria-hidden></div>
+
+    <main class="wrap" role="main">
+      <section class="card-left card">
+        <div class="agent-hero">
+          <div class="avatar" id="avatar">
+            <!-- stylized V-like mark (generic) -->
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+              <defs>
+              <linearGradient id="g1" x1="0" x2="1">
+                    <stop offset="0" stop-color="#ff7a3d"/>
+                    <stop offset="1" stop-color="#ff3b4a"/>
+                  </linearGradient>
+              </defs>
+              <path d="M20 10 L50 70 L80 10" stroke="url(#g1)" stroke-width="10" stroke-linecap="round" fill="none" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="agent-meta">
+            <div class="agent-name">KAYO-9</div>
+            <div class="agent-role">Controller · Tactical Specialist</div>
+            <div class="rank-badge">Immortal • 1,432 RATING</div>
+            <div class="agent-list" id="agentList">
+              <button class="agent-btn" data-agent="jett"><div class="initial">J</div><div class="small">Jett</div></button>
+              <button class="agent-btn" data-agent="sova"><div class="initial">S</div><div class="small">Sova</div></button>
+              <button class="agent-btn" data-agent="omen"><div class="initial">O</div><div class="small">Omen</div></button>
+              <button class="agent-btn" data-agent="sage"><div class="initial">Sa</div><div class="small">Sage</div></button>
+            </div>
+            <div class="agent-stats">
+              <div class="stat"><div class="num">1.28</div><div class="label">K/D</div></div>
+              <div class="stat"><div class="num">52%</div><div class="label">Win Rate</div></div>
+              <div class="stat"><div class="num">3.4k</div><div class="label">Matches</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="abilities">
+          <div class="ability" data-title="Smoke Volley" data-desc="Deploys multiple smoke charges to block vision.">
+            <h4>Q — Smoke Volley</h4>
+            <p>Block sightlines and control space.</p>
+          </div>
+          <div class="ability" data-title="Flash" data-desc="Short flash to blind enemies briefly.">
+            <h4>E — Flash</h4>
+            <p>Blind and disorient targets.</p>
+          </div>
+          <div class="ability" data-title="Drone" data-desc="Send scouting drone to reveal opponents.">
+            <h4>C — Recon Drone</h4>
+            <p>Gather intel and tag enemies.</p>
+          </div>
+          <div class="ability" data-title="Ultimate" data-desc="Call down a tactical area-of-effect ability.">
+            <h4>X — Tactical Ult</h4>
+            <p>High-impact zone control.</p>
+          </div>
+        </div>
+
+      </section>
+
+      <aside class="card-right">
+        <div class="panel">
+          <div class="clock-small" id="time">--:--:--</div>
+          <div class="small" id="date">Loading date...</div>
+        </div>
+
+        <div class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700">Connections</div><div class="small">Socials</div></div>
+          <div class="socials">
+            <div class="social">Discord</div>
+            <div class="social">Twitch</div>
+            <div class="social">Twitter</div>
+          </div>
+          <div class="follow">
+            <button class="btn-neon" id="followBtn">Follow</button>
+            <button class="btn-ghost" id="msgBtn">Message</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div style="font-weight:700">Loadout</div>
+          <div style="margin-top:8px;color:rgba(255,255,255,0.66)">Phantom • Classic • Operator</div>
+        </div>
+        <div class="panel" id="abilityDetail">
+          <div class="ability-detail-title">Ability details</div>
+          <div class="ability-detail-desc">Hover or click an ability to see details here.</div>
+        </div>
+      </aside>
+    </main>
+
+    <script>
+      // clock
+      const timeEl = document.getElementById('time');
+      const dateEl = document.getElementById('date');
+      function pad(n){return n<10? '0'+n : n}
+      function renderClock(){
+        const now = new Date();
+        timeEl.textContent = now.toLocaleTimeString(undefined,{hour12:false});
+        dateEl.textContent = now.toLocaleDateString(undefined,{weekday:'short', month:'short', day:'numeric'});
+      }
+      setInterval(renderClock,1000); renderClock();
+
+      // particles removed — background simplified to Valorant-style glow
+
+      // ability hover/click details and interactivity
+      const abilityDetail = document.getElementById('abilityDetail');
+      function showAbilityDetail(title, desc){
+        abilityDetail.querySelector('.ability-detail-title').textContent = title;
+        abilityDetail.querySelector('.ability-detail-desc').textContent = desc;
+      }
+
+      document.querySelectorAll('.ability').forEach(a=>{
+        a.addEventListener('mouseenter', ()=>{ a.classList.add('active'); });
+        a.addEventListener('mouseleave', ()=>{ a.classList.remove('active'); });
+        a.addEventListener('click', ()=>{
+          const title = a.dataset.title || a.querySelector('h4')?.innerText || 'Ability';
+          const desc = a.dataset.desc || a.querySelector('p')?.innerText || '';
+          showAbilityDetail(title, desc);
+          // brief pulse visual feedback
+          a.classList.add('active');
+          setTimeout(()=> a.classList.remove('active'), 420);
+        });
+      });
+
+      // Agent data and switching
+      const agents = {
+        jett: {name:'Jett', role:'Duelist', color1:'#ffd3a5', color2:'#ff6b6b', rank:'Radiant • 2,001', stats:[1.34,'54%','2.1k'], abilities:[
+          {title:'Q — Updraft', desc:'Leap to high ground.'},
+          {title:'E — Tailwind', desc:'Dash quickly in the given direction.'},
+          {title:'C — Blade Storm', desc:'Throw knives that deal heavy damage.'},
+          {title:'X — Cloudburst', desc:'Create obscuring flash-like cloud.'}
+        ], loadout:'Vandal • Classic'},
+        sova: {name:'Sova', role:'Initiator', color1:'#bfe8ff', color2:'#7ab8ff', rank:'Immortal • 1,720', stats:[1.12,'48%','4.5k'], abilities:[
+          {title:'Q — Owl Drone', desc:'Scout an area with a drone.'},
+          {title:'E — Shock Bolt', desc:'Fire an explosive bolt.'},
+          {title:'C — Recon Bolt', desc:'Reveal enemies in line of sight.'},
+          {title:'X — Hunter’s Fury', desc:'Long-range wall-spanning beam.'}
+        ], loadout:'Phantom • Classic'},
+        omen: {name:'Omen', role:'Controller', color1:'#bfa0ff', color2:'#7a5aff', rank:'Immortal • 1,654', stats:[1.08,'50%','3.8k'], abilities:[
+          {title:'Q — Paranoia', desc:'Blinds and deafens through walls.'},
+          {title:'E — Dark Cover', desc:'Cast a long smoke orb.'},
+          {title:'C — Shrouded Step', desc:'Teleport to nearby location.'},
+          {title:'X — From the Shadows', desc:'Teleport across the map.'}
+        ], loadout:'Operator • Classic'},
+        sage: {name:'Sage', role:'Sentinel', color1:'#cfffde', color2:'#7ddf9f', rank:'Immortal • 1,689', stats:[0.98,'53%','5.2k'], abilities:[
+          {title:'Q — Barrier Orb', desc:'Create a large wall.'},
+          {title:'E — Slow Orb', desc:'Slow enemies in an area.'},
+          {title:'C — Healing Orb', desc:'Heal an ally over time.'},
+          {title:'X — Resurrection', desc:'Revive a fallen ally.'}
+        ], loadout:'Guardian • Classic'}
+      };
+
+      function selectAgent(key){
+        const a = agents[key]; if(!a) return;
+        document.querySelectorAll('.agent-btn').forEach(b=>b.classList.toggle('active', b.dataset.agent===key));
+        document.querySelector('.agent-name').textContent = a.name;
+        document.querySelector('.agent-role').textContent = a.role;
+        document.querySelector('.rank-badge').textContent = a.rank;
+        // stats
+        const statEls = document.querySelectorAll('.agent-stats .stat .num');
+        statEls.forEach((el,i)=>{ el.textContent = a.stats[i]; });
+        // abilities
+        const abilityEls = document.querySelectorAll('.ability');
+        abilityEls.forEach((el,i)=>{ el.dataset.title = a.abilities[i].title; el.dataset.desc = a.abilities[i].desc; el.querySelector('h4').textContent = a.abilities[i].title; el.querySelector('p').textContent = a.abilities[i].desc; });
+        // loadout
+        document.querySelector('.panel:nth-of-type(3) div[style]').textContent = a.loadout;
+        // avatar color and badge color
+        const avatar = document.getElementById('avatar'); avatar.style.background = `linear-gradient(135deg, ${a.color1}, ${a.color2})`;
+        document.querySelector('.rank-badge').style.background = `linear-gradient(90deg, ${a.color2}, ${a.color1})`;
+      }
+
+      // wire agent buttons
+      document.querySelectorAll('.agent-btn').forEach(btn=>btn.addEventListener('click', ()=> selectAgent(btn.dataset.agent)));
+      // init default
+      selectAgent('jett');
+
+      // follow toggle with persistence
+      const followBtn = document.getElementById('followBtn');
+      const savedFollow = localStorage.getItem('followKayo');
+      if(savedFollow === '1'){ followBtn.textContent='Following'; followBtn.dataset.following='1'; }
+      followBtn.addEventListener('click', ()=>{
+        if(followBtn.dataset.following==='1'){ followBtn.textContent='Follow'; followBtn.dataset.following='0'; localStorage.setItem('followKayo','0'); }
+        else { followBtn.textContent='Following'; followBtn.dataset.following='1'; localStorage.setItem('followKayo','1'); }
+      });
+
+      // message toggles small chat box (simple)
+      const msgBtn = document.getElementById('msgBtn');
+      msgBtn.addEventListener('click', ()=>{ alert('Open message composer (placeholder)'); });
+
+      // avatar gentle float animation
+      (function animateAvatar(){
+        const av = document.getElementById('avatar'); let t=0;
+        function f(){ t+=0.02; av.style.transform = `translateY(${Math.sin(t)*4}px) rotate(${Math.sin(t/2)*1}deg)`; requestAnimationFrame(f); }
+        requestAnimationFrame(f);
+      })();
+    </script>
+  </body>
+</html>

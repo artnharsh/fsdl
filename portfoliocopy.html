@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚔️ Clash Portfolio - Builder Base</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=Bangers&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #87CEEB;
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Animated Background */
+        .sky-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #4A90E2 0%, #87CEEB 40%, #98D8C8 100%);
+            z-index: -2;
+        }
+        
+        .grass-ground {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(180deg, #5D8C3E 0%, #3E5C2B 50%, #2D4520 100%);
+            z-index: -1;
+        }
+        
+        .grass-ground::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: repeating-linear-gradient(90deg, #6B9D47 0px, #5D8C3E 10px, #4F7D35 20px);
+        }
+        
+        /* Floating Clouds */
+        .cloud {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 100px;
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        .cloud1 {
+            width: 180px;
+            height: 60px;
+            top: 8%;
+            left: -200px;
+            animation: floatCloud1 45s infinite linear;
+        }
+        
+        .cloud2 {
+            width: 220px;
+            height: 70px;
+            top: 25%;
+            left: -250px;
+            animation: floatCloud2 60s infinite linear;
+        }
+        
+        .cloud3 {
+            width: 150px;
+            height: 50px;
+            top: 15%;
+            left: -180px;
+            animation: floatCloud3 50s infinite linear;
+        }
+        
+        @keyframes floatCloud1 {
+            0% { left: -200px; }
+            100% { left: 110%; }
+        }
+        
+        @keyframes floatCloud2 {
+            0% { left: -250px; }
+            100% { left: 110%; }
+        }
+        
+        @keyframes floatCloud3 {
+            0% { left: -180px; }
+            100% { left: 110%; }
+        }
+        
+        /* Resource Bar at Top */
+        .resource-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(180deg, #2C3E50 0%, #1A252F 100%);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            border-bottom: 3px solid #FFD700;
+        }
+        
+        .resource-item {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 20px;
+            border-radius: 25px;
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .resource-icon {
+            font-size: 24px;
+            margin-right: 10px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+        }
+        
+        .resource-value {
+            color: #FFD700;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+        }
+        
+        /* Main Content */
+        .game-container {
+            position: relative;
+            padding-top: 100px;
+            min-height: 100vh;
+            z-index: 1;
+        }
+        
+        /* Town Hall - Hero Section */
+        .town-hall-complex {
+            position: relative;
+            margin: 40px auto;
+            max-width: 1000px;
+            perspective: 1000px;
+        }
+        
+        .town-hall {
+            background: linear-gradient(145deg, #8B4513 0%, #654321 50%, #4A2F1A 100%);
+            border: 5px solid #D4AF37;
+            border-radius: 30px;
+            padding: 60px 40px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.6),
+                inset 0 -10px 30px rgba(0, 0, 0, 0.5),
+                inset 0 10px 20px rgba(255, 215, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: rotateX(20deg) translateY(-100px);
+        }
+        
+        .town-hall::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: repeating-linear-gradient(90deg, #D4AF37 0px, #B8860B 20px, #D4AF37 40px);
+        }
+        
+        .town-hall::after {
+            content: '🏰';
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 80px;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.7));
+            animation: floatTownHall 3s ease-in-out infinite;
+        }
+        
+        @keyframes floatTownHall {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+        
+        .decorative-flags {
+            position: absolute;
+            top: -30px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .flag {
+            font-size: 40px;
+            animation: wave 2s ease-in-out infinite;
+        }
+        
+        .flag:nth-child(2) { animation-delay: 0.3s; }
+        .flag:nth-child(3) { animation-delay: 0.6s; }
+        
+        @keyframes wave {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+        
+        /* Hero Shield Profile */
+        .hero-shield-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+        
+        .profile-shield {
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+            border-radius: 50%;
+            border: 8px solid #8B4513;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 70px;
+            margin: 0 auto;
+            box-shadow: 
+                0 0 30px rgba(255, 215, 0, 0.8),
+                0 10px 40px rgba(0, 0, 0, 0.6),
+                inset 0 5px 15px rgba(255, 255, 255, 0.4);
+            position: relative;
+            opacity: 0;
+            transform: scale(0) rotate(-180deg);
+            animation: shieldGlow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes shieldGlow {
+            0% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 10px 40px rgba(0, 0, 0, 0.6); }
+            100% { box-shadow: 0 0 50px rgba(255, 215, 0, 1), 0 10px 40px rgba(0, 0, 0, 0.6); }
+        }
+        
+        .shield-rim {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border: 4px dashed #FFD700;
+            border-radius: 50%;
+            animation: rotateRim 15s linear infinite;
+        }
+        
+        @keyframes rotateRim {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .hero-level-badge {
+            position: absolute;
+            bottom: -10px;
+            right: -10px;
+            background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            border: 4px solid #FFD700;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .player-name {
+            font-family: 'Bangers', cursive;
+            font-size: 56px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+            letter-spacing: 3px;
+            margin: 20px 0 10px;
+            position: relative;
+        }
+        
+        .player-title {
+            font-size: 22px;
+            color: #FFA500;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-badge {
+            background: linear-gradient(135deg, #34495E 0%, #2C3E50 100%);
+            padding: 12px 25px;
+            border-radius: 15px;
+            border: 3px solid #FFD700;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+        
+        .stat-badge:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* Buildings Section */
+        .village-section {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin: 60px 0 40px;
+            position: relative;
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        
+        .section-title {
+            font-family: 'Bangers', cursive;
+            font-size: 48px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+            letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
+            padding: 0 30px;
+        }
+        
+        .section-title::before,
+        .section-title::after {
+            content: '⚔️';
+            position: absolute;
+            font-size: 40px;
+            animation: swordFloat 2s ease-in-out infinite;
+        }
+        
+        .section-title::before {
+            left: -20px;
+        }
+        
+        .section-title::after {
+            right: -20px;
+            animation-delay: 1s;
+        }
+        
+        @keyframes swordFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(10deg); }
+        }
+        
+        /* Building Cards */
+        .building {
+            background: linear-gradient(145deg, #2C3E50 0%, #1A252F 100%);
+            border: 4px solid #34495E;
+            border-radius: 20px;
+            padding: 35px;
+            margin: 25px 0;
+            box-shadow: 
+                0 15px 40px rgba(0, 0, 0, 0.5),
+                inset 0 2px 10px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateX(-150px) rotate(-5deg);
+            transition: transform 0.3s ease;
+        }
+        
+        .building:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: #FFD700;
+        }
+        
+        .building::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 215, 0, 0.1) 50%, transparent 70%);
+            transform: rotate(45deg);
+            animation: buildingShine 3s infinite;
+        }
+        
+        @keyframes buildingShine {
+            0% { left: -50%; }
+            100% { left: 150%; }
+        }
+        
+        .building-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .building-icon-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .building-icon {
+            font-size: 60px;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.5));
+            animation: iconBounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .building-title {
+            font-family: 'Lilita One', cursive;
+            font-size: 32px;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            margin: 0;
+        }
+        
+        .level-badge {
+            background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border: 3px solid #FFD700;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            white-space: nowrap;
+        }
+        
+        /* Skills - Troop Training */
+        .troop-container {
+            margin-top: 25px;
+        }
+        
+        .troop-item {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #34495E;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.3s ease;
+        }
+        
+        .troop-item:hover {
+            border-color: #FFD700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .troop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .troop-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ECF0F1;
+        }
+        
+        .troop-level {
+            background: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid #FFD700;
+        }
+        
+        .progress-container {
+            position: relative;
+            background: #1A252F;
+            height: 35px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid #34495E;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3498DB 0%, #2ECC71 50%, #F39C12 100%);
+            border-radius: 20px;
+            transition: width 2s ease-out;
+            width: 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.8);
+        }
+        
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: progressShine 2s infinite;
+        }
+        
+        @keyframes progressShine {
+            0% { left: -100%; }
+            100% { left: 200%; }
+        }
+        
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), transparent);
+            border-radius: 20px 20px 0 0;
+        }
+        
+        /* Projects - War Logs */
+        .war-logs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .war-card {
+            background: linear-gradient(145deg, #8B4513 0%, #654321 100%);
+            border: 4px solid #D4AF37;
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: scale(0.7) rotate(-10deg);
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+        
+        .war-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: repeating-linear-gradient(90deg, #D4AF37 0px, #FFD700 10px, #D4AF37 20px);
+        }
+        
+        .war-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.6);
+            border-color: #FFD700;
+        }
+        
+        .war-banner {
+            background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+            color: #fff;
+            padding: 10px;
+            margin: -30px -30px 20px -30px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            border-bottom: 3px solid #FFD700;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .war-card-title {
+            font-family: 'Lilita One', cursive;
+            font-size: 26px;
+            color: #FFD700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+        
+        .war-description {
+            color: #ECF0F1;
+            line-height: 1.6;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .war-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .stars {
+            font-size: 28px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+        }
+        
+        .rarity-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            border: 2px solid;
+        }
+        
+        .legendary { background: linear-gradient(135deg, #F39C12 0%, #E67E22 100%); border-color: #FFD700; }
+        .epic { background: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%); border-color: #C39BD3; }
+        .rare { background: linear-gradient(135deg, #3498DB 0%, #2980B9 100%); border-color: #85C1E9; }
+        
+        /* Contact Section - Builder Hut */
+        .builder-hut {
+            background: linear-gradient(145deg, #E67E22 0%, #D35400 100%);
+            border: 5px solid #F39C12;
+            border-radius: 25px;
+            padding: 50px;
+            margin: 60px auto;
+            max-width: 800px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(100px);
+        }
+        
+        .builder-hut::before {
+            content: '🛠️';
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 70px;
+            animation: hammerSwing 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes hammerSwing {
+            0%, 100% { transform: translateX(-50%) rotate(-20deg); }
+            50% { transform: translateX(-50%) rotate(20deg); }
+        }
+        
+        .contact-title {
+            font-family: 'Bangers', cursive;
+            font-size: 42px;
+            color: #FFD700;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+        }
+        
+        .contact-description {
+            font-size: 20px;
+            color: #ECF0F1;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .attack-button {
+            background: linear-gradient(135deg, #27AE60 0%, #229954 100%);
+            color: #fff;
+            border: 4px solid #1E8449;
+            padding: 18px 50px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 15px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 2px;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        
+        .attack-button::before {
+            content: '⚡';
+            position: absolute;
+            left: 20px;
+            font-size: 28px;
+            animation: lightning 1s ease-in-out infinite;
+        }
+        
+        .attack-button::after {
+            content: '⚡';
+            position: absolute;
+            right: 20px;
+            font-size: 28px;
+            animation: lightning 1s ease-in-out infinite reverse;
+        }
+        
+        @keyframes lightning {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        
+        .attack-button:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(39, 174, 96, 0.6);
+            background: linear-gradient(135deg, #229954 0%, #27AE60 100%);
+        }
+        
+        /* Social Links - Clan Castle */
+        .clan-castle {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .social-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #3498DB 0%, #2980B9 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #fff;
+            border: 4px solid #1A5276;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        
+        .social-icon::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid #3498DB;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-15px) rotate(360deg) scale(1.1);
+            box-shadow: 0 15px 40px rgba(52, 152, 219, 0.8);
+        }
+        
+        .social-icon:hover::before {
+            opacity: 1;
+            transform: scale(1.3);
+        }
+        
+        .social-icon:nth-child(1) { background: linear-gradient(135deg, #333 0%, #000 100%); border-color: #444; }
+        .social-icon:nth-child(2) { background: linear-gradient(135deg, #0077B5 0%, #005582 100%); border-color: #004471; }
+        .social-icon:nth-child(3) { background: linear-gradient(135deg, #1DA1F2 0%, #0C85D0 100%); border-color: #0A6FB7; }
+        .social-icon:nth-child(4) { background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%); border-color: #A93226; }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            margin-top: 60px;
+            border-top: 3px solid #FFD700;
+        }
+        
+        .footer-text {
+            color: #ECF0F1;
+            font-size: 18px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sky Background -->
+    <div class="sky-bg"></div>
+    
+    <!-- Clouds -->
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="cloud cloud3"></div>
+    
+    <!-- Grass Ground -->
+    <div class="grass-ground"></div>
+    
+    <!-- Resource Bar -->
+    <div class="resource-bar">
+        <div class="resource-item">
+            <span class="resource-icon">💎</span>
+            <span class="resource-value">2,450</span>
+        </div>
+        <div class="resource-item">
+            <span class="resource-icon">🏆</span>
+            <span class="resource-value">3,875</span>
+        </div>
+        <div class="resource-item">
+            <span class="resource-icon">⭐</span>
+            <span class="resource-value">Level 45</span>
+        </div>
+    </div>
+    
+    <!-- Main Game Container -->
+    <div class="game-container">
+        <!-- Town Hall Complex -->
+        <div class="town-hall-complex">
+            <div class="town-hall">
+                <div class="decorative-flags">
+                    <span class="flag">🚩</span>
+                    <span class="flag">🚩</span>
+                    <span class="flag">🚩</span>
+                </div>
+                
+                <div class="hero-shield-container">
+                    <div class="shield-rim"></div>
+                    <div class="profile-shield">👨‍💻</div>
+                    <div class="hero-level-badge">45</div>
+                </div>
+                
+                <h1 class="player-name text-center">YOUR NAME</h1>
+                <p class="player-title text-center">⚔️ LEGENDARY DEVELOPER ⚔️</p>
+                
+                <div class="stats-container">
+                    <div class="stat-badge">
+                        <span>🏆</span>
+                        <span>3,875 Trophies</span>
+                    </div>
+                    <div class="stat-badge">
+                        <span>⭐</span>
+                        <span>Level 45</span>
+                    </div>
+                    <div class="stat-badge">
+                        <span>🛡️</span>
+                        <span>Titan League</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Village Section -->
+        <div class="village-section">
+            <!-- About Building -->
+            <div class="building">
+                <div class="building-header">
+                    <div class="building-icon-container">
+                        <span class="building-icon">🏰</span>
+                        <h2 class="building-title">CLAN CASTLE</h2>
+                    </div>
+                    <div class="level-badge">MAX LEVEL</div>
+                </div>
+                <p style="font-size: 18px; line-height: 1.8; color: #ECF0F1;">
+                    Welcome to my developer base! I'm a passionate full-stack warrior who crafts powerful applications 
+                    and defends against bugs with strategic code. With years of experience in the battlefield of technology, 
+                    I've mastered multiple programming languages and frameworks. My mission? To build legendary digital 
+                    experiences that stand the test of time. Ready to raid some projects together? Let's clash! ⚔️
+                </p>
+            </div>
+            
+            <!-- Skills Section -->
+            <div class="section-header">
+                <h2 class="section-title">ARMY CAMP</h2>
+            </div>
+            
+            <div class="building">
+                <div class="building-header">
+                    <div class="building-icon-container">
+                        <span class="building-icon">⚔️</span>
+                        <h2 class="building-title">TROOP TRAINING</h2>
+                    </div>
+                    <div class="level-badge">LEVEL 13</div>
+                </div>
+                
+                <div class="troop-container">
+                    <div class="troop-item">
+                        <div class="troop-header">
+                            <div class="troop-name">
+                                <span>🗡️</span>
+                                <span>JavaScript Barbarians</span>
+                            </div>
+                            <div class="troop-level">95%</div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar" data-width="95"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="troop-item">
+                        <div class="troop-header">
+                            <div class="troop-name">
+                                <span>⚛️</span>
+                                <span>React Wizards</span>
+                            </div>
+                            <div class="troop-level">92%</div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar" data-width="92"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="troop-item">
+                        <div class="troop-header">
+                            <div class="troop-name">
+                                <span>🐍</span>
+                                <span>Python Dragons</span>
+                            </div>
+                            <div class="troop-level">88%</div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar" data-width="88"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="troop-item">
+                        <div class="troop-header">
+                            <div class="troop-name">
+                                <span>🎨</span>
+                                <span>UI/UX Archers</span>
+                            </div>
+                            <div class="troop-level">90%</div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar" data-width="90"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="troop-item">
+                        <div class="troop-header">
+                            <div class="troop-name">
+                                <span>📦</span>
+                                <span>Node.js Giants</span>
+                            </div>
+                            <div class="troop-level">93%</div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar" data-width="93"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="troop-item">
+                        <div class="troop-header">
+                            <div class="troop-name">
+                                <span>🗄️</span>
+                                <span>Database Golems</span>
+                            </div>
+                            <div class="troop-level">87%</div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar" data-width="87"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Projects Section -->
+            <div class="section-header">
+                <h2 class="section-title">WAR LOGS</h2>
+            </div>
+            
+            <div class="war-logs">
+                <div class="war-card">
+                    <div class="war-banner">🎮 VICTORY</div>
+                    <h3 class="war-card-title">Real-Time Gaming Hub</h3>
+                    <p class="war-description">
+                        Built a massive multiplayer gaming platform with live leaderboards, 
+                        player stats tracking, and real-time chat. Handled 10K+ concurrent users!
+                    </p>
+                    <div class="war-stats">
+                        <div class="stars">⭐⭐⭐</div>
+                        <div class="rarity-badge legendary">LEGENDARY</div>
+                    </div>
+                </div>
+                
+                <div class="war-card">
+                    <div class="war-banner">🛒 VICTORY</div>
+                    <h3 class="war-card-title">E-Commerce Empire</h3>
+                    <p class="war-description">
+                        Crafted a full-scale shopping platform with secure payments, inventory 
+                        management, and smart recommendations. 50K+ products managed!
+                    </p>
+                    <div class="war-stats">
+                        <div class="stars">⭐⭐⭐</div>
+                        <div class="rarity-badge epic">EPIC</div>
+                    </div>
+                </div>
+                
+                <div class="war-card">
+                    <div class="war-banner">💬 VICTORY</div>
+                    <h3 class="war-card-title">Social Network Arena</h3>
+                    <p class="war-description">
+                        Developed a vibrant community platform with real-time messaging, 
+                        posts, comments, and media sharing. Connected 100K+ users worldwide!
+                    </p>
+                    <div class="war-stats">
+                        <div class="stars">⭐⭐⭐</div>
+                        <div class="rarity-badge legendary">LEGENDARY</div>
+                    </div>
+                </div>
+                
+                <div class="war-card">
+                    <div class="war-banner">🤖 VICTORY</div>
+                    <h3 class="war-card-title">AI Command Center</h3>
+                    <p class="war-description">
+                        Engineered an intelligent chatbot with ML capabilities for customer 
+                        support, reducing response time by 80% and handling 5K+ queries daily!
+                    </p>
+                    <div class="war-stats">
+                        <div class="stars">⭐⭐⭐</div>
+                        <div class="rarity-badge epic">EPIC</div>
+                    </div>
+                </div>
+                
+                <div class="war-card">
+                    <div class="war-banner">📊 VICTORY</div>
+                    <h3 class="war-card-title">Analytics Dashboard</h3>
+                    <p class="war-description">
+                        Created a powerful data visualization platform with interactive charts, 
+                        real-time updates, and custom reports for business intelligence!
+                    </p>
+                    <div class="war-stats">
+                        <div class="stars">⭐⭐⭐</div>
+                        <div class="rarity-badge rare">RARE</div>
+                    </div>
+                </div>
+                
+                <div class="war-card">
+                    <div class="war-banner">🎓 VICTORY</div>
+                    <h3 class="war-card-title">Learning Management System</h3>
+                    <p class="war-description">
+                        Built an education platform with video streaming, quizzes, assignments, 
+                        and progress tracking. Empowered 20K+ students to learn better!
+                    </p>
+                    <div class="war-stats">
+                        <div class="stars">⭐⭐⭐</div>
+                        <div class="rarity-badge epic">EPIC</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Section -->
+            <div class="builder-hut">
+                <h2 class="contact-title">🔨 RECRUIT ME! 🔨</h2>
+                <p class="contact-description">
+                    Ready to launch a legendary raid on your next project? Let's join forces 
+                    and build something EPIC together! My troops are trained, my skills are 
+                    maxed, and I'm ready for battle! 
+                </p>
+                <button class="attack-button">DECLARE WAR!</button>
+                
+                <div class="clan-castle">
+                    <a href="#" class="social-icon" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="social-icon" title="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="social-icon" title="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="social-icon" title="Email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p class="footer-text">⚔️ © 2025 Developer Village | Clash On! | All Raids Reserved 🏆</p>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Town Hall dramatic entrance
+        gsap.to('.town-hall', {
+            opacity: 1,
+            rotateX: 0,
+            y: 0,
+            duration: 1.5,
+            ease: 'power4.out',
+            delay: 0.3
+        });
+        
+        // Profile shield epic reveal
+        gsap.to('.profile-shield', {
+            opacity: 1,
+            scale: 1,
+            rotation: 0,
+            duration: 1.2,
+            delay: 0.8,
+            ease: 'elastic.out(1, 0.6)'
+        });
+        
+        // Buildings slide in from sides
+        gsap.utils.toArray('.building').forEach((building, i) => {
+            gsap.to(building, {
+                scrollTrigger: {
+                    trigger: building,
+                    start: 'top 85%',
+                    end: 'top 40%',
+                    toggleActions: 'play none none reverse'
+                },
+                opacity: 1,
+                x: 0,
+                rotation: 0,
+                duration: 1,
+                delay: i * 0.15,
+                ease: 'back.out(1.5)'
+            });
+        });
+        
+        // Section headers pop
+        gsap.utils.toArray('.section-header').forEach(header => {
+            gsap.to(header, {
+                scrollTrigger: {
+                    trigger: header,
+                    start: 'top 80%',
+                    toggleActions: 'play none none reverse'
+                },
+                opacity: 1,
+                scale: 1,
+                duration: 0.8,
+                ease: 'elastic.out(1, 0.5)'
+            });
+        });
+        
+        // Troop items march in
+        gsap.utils.toArray('.troop-item').forEach((troop, i) => {
+            gsap.to(troop, {
+                scrollTrigger: {
+                    trigger: troop,
+                    start: 'top 85%',
+                    onEnter: () => {
+                        const bar = troop.querySelector('.progress-bar');
+                        const width = bar.getAttribute('data-width');
+                        setTimeout(() => {
+                            bar.style.width = width + '%';
+                        }, 200);
+                    }
+                },
+                opacity: 1,
+                x: 0,
+                duration: 0.8,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+        
+        // War cards battle entrance
+        gsap.utils.toArray('.war-card').forEach((card, i) => {
+            gsap.to(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 85%',
+                    toggleActions: 'play none none reverse'
+                },
+                opacity: 1,
+                scale: 1,
+                rotation: 0,
+                duration: 0.8,
+                delay: i * 0.12,
+                ease: 'back.out(2)'
+            });
+        });
+        
+        // Builder hut rises
+        gsap.to('.builder-hut', {
+            scrollTrigger: {
+                trigger: '.builder-hut',
+                start: 'top 85%',
+                toggleActions: 'play none none reverse'
+            },
+            opacity: 1,
+            y: 0,
+            duration: 1.2,
+            ease: 'power4.out'
+        });
+        
+        // Attack button charges up
+        gsap.to('.attack-button', {
+            scrollTrigger: {
+                trigger: '.attack-button',
+                start: 'top 90%',
+                toggleActions: 'play none none reverse'
+            },
+            opacity: 1,
+            scale: 1,
+            duration: 0.8,
+            ease: 'elastic.out(1, 0.6)'
+        });
+        
+        // Social icons deploy
+        gsap.utils.toArray('.social-icon').forEach((icon, i) => {
+            gsap.to(icon, {
+                scrollTrigger: {
+                    trigger: icon,
+                    start: 'top 95%',
+                    toggleActions: 'play none none reverse'
+                },
+                opacity: 1,
+                y: 0,
+                duration: 0.6,
+                delay: i * 0.1,
+                ease: 'back.out(3)'
+            });
+        });
+        
+        // Parallax clouds
+        gsap.utils.toArray('.cloud').forEach((cloud, i) => {
+            gsap.to(cloud, {
+                scrollTrigger: {
+                    trigger: 'body',
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    scrub: 1 + (i * 0.5)
+                },
+                y: 300 + (i * 50),
+                ease: 'none'
+            });
+        });
+        
+        // Resource bar pulse
+        gsap.to('.resource-item', {
+            scale: 1.05,
+            duration: 0.8,
+            stagger: 0.2,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut'
+        });
+        
+        // Button click effect
+        document.querySelector('.attack-button').addEventListener('click', function() {
+            gsap.to(this, {
+                scale: 0.95,
+                duration: 0.1,
+                yoyo: true,
+                repeat: 1,
+                onComplete: () => {
+                    alert('⚔️ RAID INITIATED! Let\'s connect and build something legendary!');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
